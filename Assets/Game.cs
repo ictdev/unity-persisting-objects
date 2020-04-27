@@ -37,55 +37,51 @@ public class Game : MonoBehaviour
                 writer.Write(t.localPosition.z);
             }
         }
-        void Load()
+    }
+    void Load()
+    {
+        BeginNewGame();
+        using (
+            var reader = new BinaryReader(File.Open(savePath, FileMode.Open)))
         {
-            BeginNewGame();
-            using (
-                var reader = new BinaryReader(File.Open(savePath, FileMode.Open)))
+            int count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
             {
-                int count = reader.ReadInt32();
-                for (int i = 0; i < count; i++)
-                {
-                    Vector3 p;
-                    p.x = reader.ReadSingle();
-                    p.y = reader.ReadSingle();
-                    p.z = reader.ReadSingle();
-                    Transform t = Instantiate(prefab);
-                    t.localPosition = p;
-                    objects.Add(t);
-                }
-            }
-        }
-
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            if (Input.GetKeyDown(createKey))
-            {
-                CreateObject();
-            }
-            else if (Input.GetKey(newGameKey))
-            {
-                BeginNewGame();
-            }
-            else if (Input.GetKeyDown(saveKey))
-            {
-                Save();
-            }
-            else if (Input.GetKeyDown(loadKey))
-            {
-                Load();
+                Vector3 p;
+                p.x = reader.ReadSingle();
+                p.y = reader.ReadSingle();
+                p.z = reader.ReadSingle();
+                Transform t = Instantiate(prefab);
+                t.localPosition = p;
+                objects.Add(t);
             }
         }
     }
 
+
+    // Start is called before the first frame update
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(createKey))
+        {
+            CreateObject();
+        }
+        else if (Input.GetKey(newGameKey))
+        {
+            BeginNewGame();
+        }
+        else if (Input.GetKeyDown(saveKey))
+        {
+            Save();
+        }
+        else if (Input.GetKeyDown(loadKey))
+        {
+            Load();
+        }
+    }
     void BeginNewGame()
     {
         for (int i = 0; i < objects.Count; i++)
@@ -103,5 +99,4 @@ public class Game : MonoBehaviour
         t.localScale = Vector3.one * UnityEngine.Random.Range(0.1f, 1f);
         objects.Add(t);
     }
-
 }
